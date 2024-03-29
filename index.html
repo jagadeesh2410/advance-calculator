@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator</title>
+<style>
+  /* CSS styling for calculator */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .calculator-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .calculator {
+    width: 100%;
+    border: 2px solid black;
+    max-width: 400px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  .display-container {
+    position: relative;
+    width: 100%;
+    height: 60px; /* Set the height to match button height */
+    margin-bottom: 20px;
+    background-color: #d2d7e6;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .input-display {
+    font-size: 18px;
+    align-self: flex-start;
+  }
+  .output-display {
+    font-size: 26px;
+    align-self: flex-end;
+  }
+  .keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 2fr);
+    grid-gap: 10px;
+  }
+  .btn {
+    height: 60px;
+    font-size: 20px;
+    font-weight: bolder;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #7ba7eb;
+  }
+  .btn:hover {
+    background-color: #17abe6;
+  }
+  .btn.operator {
+    background-color: #ff8c00;
+  }
+  .btn.clear {
+    background-color: #ff6666;
+  }
+  .btn.delete {
+    background-color: #d41d1d;
+  }
+  .btn.plus-minus {
+    background-color: #e0e0e0;
+  }
+  .btn.root {
+    background-color: #64a8df;
+    font-weight: bolder;
+  }
+  .btn.root:hover {
+    background-color: #17abe6;
+  }
+  .btn.result {
+    background-color: #39af3d;
+    color: white;
+  }
+  .btn.result:hover {
+    background-color: rgb(9, 218, 9);
+  }
+  @media screen and (max-width: 350px) {
+    .btn {
+      font-size: 16px;
+    }
+    .input-display {
+      font-size: 14px;
+    }
+    .output-display {
+      font-size: 24px;
+      font-weight: bolder;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="calculator-wrapper">
+    
+  <div class="calculator">
+    <div class="display-container" id="display-container">
+      <div class="input-display" id="input-display"></div>
+      <div class="output-display" id="output-display"></div>
+    </div>
+    <div class="keypad">
+      <button class="btn clear" onclick="clearDisplay()">C</button>
+      <button class="btn delete" onclick="deleteLast()">DEL</button>
+      <button class="btn" onclick="appendToDisplay('(')">(</button>
+      <button class="btn" onclick="appendToDisplay(')')">)</button>
+      <button class="btn" onclick="appendToDisplay('7')">7</button>
+      <button class="btn" onclick="appendToDisplay('8')">8</button>
+      <button class="btn" onclick="appendToDisplay('9')">9</button>
+      <button class="btn operator" onclick="appendToDisplay('/')">/</button>
+      <button class="btn" onclick="appendToDisplay('4')">4</button>
+      <button class="btn" onclick="appendToDisplay('5')">5</button>
+      <button class="btn" onclick="appendToDisplay('6')">6</button>
+      <button class="btn operator" onclick="appendToDisplay('*')">*</button>
+      <button class="btn" onclick="appendToDisplay('1')">1</button>
+      <button class="btn" onclick="appendToDisplay('2')">2</button>
+      <button class="btn" onclick="appendToDisplay('3')">3</button>
+      <button class="btn operator" onclick="appendToDisplay('-')">-</button>
+      <button class="btn" onclick="appendToDisplay('.')">.</button>
+      <button class="btn" onclick="appendToDisplay('0')">0</button>
+      <button class="btn root" onclick="appendRoot()">√</button>
+      <button class="btn operator" onclick="appendToDisplay('+')">+</button>
+      <button class="btn" onclick="toggleSign()">+/-</button>
+      <button class="btn result" onclick="calculate()" style="grid-column: span 2;">=</button>
+      <button class="btn operator" onclick="appendToDisplay('%')">%</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // JavaScript for calculator functionality
+  function appendToDisplay(value) {
+    var inputDisplay = document.getElementById('input-display');
+    inputDisplay.innerText += value;
+  }
+
+  function appendRoot() {
+    var inputDisplay = document.getElementById('input-display');
+    inputDisplay.innerText += '√';
+  }
+
+  function clearDisplay() {
+    var inputDisplay = document.getElementById('input-display');
+    inputDisplay.innerText = '';
+    updateOutput('');
+  }
+
+  function deleteLast() {
+    var inputDisplay = document.getElementById('input-display');
+    inputDisplay.innerText = inputDisplay.innerText.slice(0, -1);
+  }
+
+  function toggleSign() {
+    var inputDisplay = document.getElementById('input-display');
+    if (inputDisplay.innerText.charAt(0) === '-') {
+      inputDisplay.innerText = inputDisplay.innerText.slice(1);
+    } else {
+      inputDisplay.innerText = '-' + inputDisplay.innerText;
+    }
+  }
+
+  function updateOutput(result) {
+    var outputDisplay = document.getElementById('output-display');
+    outputDisplay.innerText = result;
+  }
+
+  function calculate() {
+    var inputDisplay = document.getElementById('input-display');
+    try {
+      // Parse and evaluate the expression
+      var expression = inputDisplay.innerText;
+      var result = evaluateExpression(expression);
+      updateOutput(result);
+    } catch (error) {
+      updateOutput('Error');
+    }
+  }
+
+  function evaluateExpression(expression) {
+    // Replace '√' with 'Math.sqrt' in the expression
+    expression = expression.replace(/√(\d+)/g, function(match, number) {
+      return Math.sqrt(parseFloat(number));
+    });
+    // Use eval to evaluate the expression
+    return eval(expression);
+  }
+</script>
+
+</body>
+</html>
